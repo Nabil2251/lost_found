@@ -119,14 +119,13 @@
   </style>
 </head>
 <body>
-
-  <!-- Start Page -->
+ 
   <div class="container" id="startPage">
     <h2>Welcome to Lost & Found</h2>
     <button onclick="showLogin()">Login / Register</button>
   </div>
 
-  <!-- Login Page -->
+ 
   <div class="container hidden" id="loginPage">
     <h2>Login / Register</h2>
     <input type="text" id="username" placeholder="Enter Username">
@@ -135,7 +134,7 @@
     <button class="back-btn" onclick="goBack('login')">Back</button>
   </div>
 
-  <!-- Choose Page -->
+
   <div class="container hidden" id="choosePage">
     <h2>What do you want to do?</h2>
     <button onclick="openDashboard('LOST')">Report LOST</button>
@@ -144,7 +143,7 @@
     <button class="back-btn" onclick="goBack('choose')">Back</button>
   </div>
 
-  <!-- Dashboard Page -->
+
   <div class="container hidden" id="dashboardPage">
     <h2>Dashboard</h2>
     <p id="dashboardText"></p>
@@ -160,7 +159,6 @@
     <button onclick="logout()">Logout</button>
   </div>
 
-  <!-- Report Item Page -->
   <div class="container hidden" id="reportItemPage">
     <h2>Report Item</h2>
     <input type="text" id="itemName" placeholder="Item Name">
@@ -180,14 +178,12 @@
     <button class="back-btn" onclick="goBack('reportItem')">Back</button>
   </div>
 
-  <!-- View Reports Page -->
   <div class="container hidden" id="viewReportsPage">
     <h2 id="viewReportsTitle">Your Reports</h2>
     <div id="reportsList"></div>
     <button class="back-btn" onclick="goBack('viewReports')">Back</button>
   </div>
 
-  <!-- Search Items Page -->
   <div class="container hidden" id="searchItemsPage">
     <h2>Search Items</h2>
     <input type="text" id="searchQuery" placeholder="Search by name, category, or location">
@@ -196,7 +192,6 @@
     <button class="back-btn" onclick="goBack('searchItems')">Back</button>
   </div>
 
-  <!-- Profile Page -->
   <div class="container hidden" id="profilePage">
     <h2>Your Profile</h2>
     <p>Username: <span id="profileUsername"></span></p>
@@ -205,18 +200,15 @@
   </div>
 
   <script>
-    // Global variables
     let currentUser = null;
     let currentItemType = '';
     let items = JSON.parse(localStorage.getItem('lostFoundItems')) || [];
     let users = JSON.parse(localStorage.getItem('lostFoundUsers')) || [];
 
-    // Initialize with a demo user if none exists
     if (users.length === 0) {
       users.push({ username: 'demo', password: 'demo', reports: 0 });
       localStorage.setItem('lostFoundUsers', JSON.stringify(users));
       
-      // Add sample items if none exist
       if (items.length === 0) {
         items.push({
           id: 1,
@@ -260,7 +252,6 @@
       let password = document.getElementById('password').value;
 
       if(username && password) {
-        // Check if user exists
         const user = users.find(u => u.username === username && u.password === password);
         
         if (user) {
@@ -268,7 +259,6 @@
           document.getElementById('loginPage').classList.add('hidden');
           document.getElementById('choosePage').classList.remove('hidden');
         } else {
-          // Create new user if doesn't exist
           users.push({ username, password, reports: 0 });
           localStorage.setItem('lostFoundUsers', JSON.stringify(users));
           currentUser = username;
@@ -296,7 +286,6 @@
       document.getElementById('dashboardPage').classList.add('hidden');
       document.getElementById('viewReportsPage').classList.remove('hidden');
       
-      // Update the title based on current selection
       document.getElementById('viewReportsTitle').innerText = 
         `Your ${currentItemType} Reports`;
       
@@ -312,7 +301,6 @@
       document.getElementById('dashboardPage').classList.add('hidden');
       document.getElementById('profilePage').classList.remove('hidden');
       
-      // Update profile info
       const user = users.find(u => u.username === currentUser);
       document.getElementById('profileUsername').textContent = currentUser;
       document.getElementById('totalReports').textContent = user.reports || 0;
@@ -331,7 +319,6 @@
         return;
       }
       
-      // Convert image to base64 for storage
       if (imageFile) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -367,7 +354,6 @@
       items.push(newItem);
       localStorage.setItem('lostFoundItems', JSON.stringify(items));
       
-      // Update user report count
       const userIndex = users.findIndex(u => u.username === currentUser);
       if (userIndex !== -1) {
         users[userIndex].reports = (users[userIndex].reports || 0) + 1;
@@ -376,7 +362,6 @@
       
       alert("Item reported successfully!");
       
-      // Clear the form
       document.getElementById('itemName').value = '';
       document.getElementById('itemDescription').value = '';
       document.getElementById('itemLocation').value = '';
@@ -391,7 +376,6 @@
       const reportsList = document.getElementById('reportsList');
       reportsList.innerHTML = '';
       
-      // Filter items by current user AND current item type (LOST/FOUND)
       const userReports = items.filter(item => 
         item.reportedBy === currentUser && item.type === currentItemType
       );
