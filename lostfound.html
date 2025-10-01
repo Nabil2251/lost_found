@@ -6,23 +6,26 @@
   <title>Digital Lost & Found Management System</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: #fff;
-      width: 400px;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-      text-align: center;
-      animation: fadeIn 0.5s ease-in-out;
-    }
+          font-family: Arial, sans-serif;
+          background: url('seu.webp') no-repeat center center fixed;
+          background-size: cover;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          margin: 0;
+        }
+
+          .container {
+            background: rgba(255, 255, 255, 0.9);
+            width: 400px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
     h2 {
       margin-bottom: 20px;
       color: #444;
@@ -119,20 +122,36 @@
   </style>
 </head>
 <body>
- 
+
+
   <div class="container" id="startPage">
-    <h2>Welcome to Lost & Found</h2>
+    <h2>Welcome to Lost & Found Portal</h2>
     <button onclick="showLogin()">Login / Register</button>
   </div>
 
- 
-  <div class="container hidden" id="loginPage">
-    <h2>Login / Register</h2>
-    <input type="text" id="username" placeholder="Enter Username">
-    <input type="password" id="password" placeholder="Enter Password">
-    <button onclick="login()">Login</button>
-    <button class="back-btn" onclick="goBack('login')">Back</button>
-  </div>
+
+<div class="container hidden" id="loginPage">
+  <h2>Login / Register</h2>
+  
+  <input 
+    type="text" 
+    id="studentId" 
+    name="studentId" 
+    placeholder="Enter 13-digit Student ID" 
+    pattern="\d{13}" 
+    maxlength="13" 
+    required>
+
+  <input 
+    type="password" 
+    id="password" 
+    name="password" 
+    placeholder="Enter Password" 
+    required>
+
+  <button onclick="login()">Login</button>
+  <button class="back-btn" onclick="goBack('login')">Back</button>
+</div>
 
 
   <div class="container hidden" id="choosePage">
@@ -159,6 +178,7 @@
     <button onclick="logout()">Logout</button>
   </div>
 
+
   <div class="container hidden" id="reportItemPage">
     <h2>Report Item</h2>
     <input type="text" id="itemName" placeholder="Item Name">
@@ -178,11 +198,13 @@
     <button class="back-btn" onclick="goBack('reportItem')">Back</button>
   </div>
 
+
   <div class="container hidden" id="viewReportsPage">
     <h2 id="viewReportsTitle">Your Reports</h2>
     <div id="reportsList"></div>
     <button class="back-btn" onclick="goBack('viewReports')">Back</button>
   </div>
+
 
   <div class="container hidden" id="searchItemsPage">
     <h2>Search Items</h2>
@@ -205,10 +227,12 @@
     let items = JSON.parse(localStorage.getItem('lostFoundItems')) || [];
     let users = JSON.parse(localStorage.getItem('lostFoundUsers')) || [];
 
+
     if (users.length === 0) {
       users.push({ username: 'demo', password: 'demo', reports: 0 });
       localStorage.setItem('lostFoundUsers', JSON.stringify(users));
       
+    
       if (items.length === 0) {
         items.push({
           id: 1,
@@ -248,27 +272,36 @@
     }
 
     function login() {
-      let username = document.getElementById('username').value;
-      let password = document.getElementById('password').value;
+  let studentId = document.getElementById('studentId').value.trim();
+  let password = document.getElementById('password').value.trim();
 
-      if(username && password) {
-        const user = users.find(u => u.username === username && u.password === password);
-        
-        if (user) {
-          currentUser = username;
-          document.getElementById('loginPage').classList.add('hidden');
-          document.getElementById('choosePage').classList.remove('hidden');
-        } else {
-          users.push({ username, password, reports: 0 });
-          localStorage.setItem('lostFoundUsers', JSON.stringify(users));
-          currentUser = username;
-          document.getElementById('loginPage').classList.add('hidden');
-          document.getElementById('choosePage').classList.remove('hidden');
-        }
-      } else {
-        alert("Please enter username and password!");
-      }
+
+  let idPattern = /^\d{13}$/;
+  if (!idPattern.test(studentId)) {
+    alert("Student ID must be exactly 13 digits!");
+    return;
+  }
+
+  if (studentId && password) {
+    const user = users.find(u => u.studentId === studentId && u.password === password);
+
+    if (user) {
+      currentUser = studentId;
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('choosePage').classList.remove('hidden');
+    } else {
+  
+      users.push({ studentId, password, reports: 0 });
+      localStorage.setItem('lostFoundUsers', JSON.stringify(users));
+      currentUser = studentId;
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('choosePage').classList.remove('hidden');
     }
+  } else {
+    alert("Please enter Student ID and password!");
+  }
+}
+
 
     function openDashboard(type) {
       currentItemType = type;
@@ -286,6 +319,7 @@
       document.getElementById('dashboardPage').classList.add('hidden');
       document.getElementById('viewReportsPage').classList.remove('hidden');
       
+    
       document.getElementById('viewReportsTitle').innerText = 
         `Your ${currentItemType} Reports`;
       
@@ -301,6 +335,7 @@
       document.getElementById('dashboardPage').classList.add('hidden');
       document.getElementById('profilePage').classList.remove('hidden');
       
+    
       const user = users.find(u => u.username === currentUser);
       document.getElementById('profileUsername').textContent = currentUser;
       document.getElementById('totalReports').textContent = user.reports || 0;
@@ -319,6 +354,7 @@
         return;
       }
       
+  
       if (imageFile) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -354,6 +390,7 @@
       items.push(newItem);
       localStorage.setItem('lostFoundItems', JSON.stringify(items));
       
+    
       const userIndex = users.findIndex(u => u.username === currentUser);
       if (userIndex !== -1) {
         users[userIndex].reports = (users[userIndex].reports || 0) + 1;
@@ -362,6 +399,7 @@
       
       alert("Item reported successfully!");
       
+    
       document.getElementById('itemName').value = '';
       document.getElementById('itemDescription').value = '';
       document.getElementById('itemLocation').value = '';
@@ -376,6 +414,7 @@
       const reportsList = document.getElementById('reportsList');
       reportsList.innerHTML = '';
       
+    
       const userReports = items.filter(item => 
         item.reportedBy === currentUser && item.type === currentItemType
       );
